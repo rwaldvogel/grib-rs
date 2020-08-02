@@ -50,6 +50,43 @@ pub enum SectionBody {
     Section7,
 }
 
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum ShapeOfEarth {
+    SphericalRadius_6_367_470_m = 0,
+    SphericalRadiusDefined_m = 1,
+    OblateSpheroidIAU_m = 2,
+    OblateSpheroidAxesDefined_km = 3,
+    IagGrs80 = 4,
+    Wgs84 = 5,
+    SphericalRadius_6_371_229_m = 6,
+    OblateSpheroidAxesDefined_m = 7,
+    SphericalRadiusHorizontaWgs84_6_371_200_m = 8,
+    Reserved = 9,
+    LocalUse = 192,
+    Missing = 255,
+}
+
+impl From<u8> for ShapeOfEarth {
+    fn from(orig: u8) -> Self {
+        match orig {
+            0 => ShapeOfEarth::SphericalRadius_6_367_470_m,
+            1 => ShapeOfEarth::SphericalRadiusDefined_m,
+            2 => ShapeOfEarth::OblateSpheroidIAU_m,
+            3 => ShapeOfEarth::OblateSpheroidAxesDefined_km,
+            4 => ShapeOfEarth::IagGrs80,
+            5 => ShapeOfEarth::Wgs84,
+            6 => ShapeOfEarth::SphericalRadius_6_371_229_m,
+            7 => ShapeOfEarth::OblateSpheroidAxesDefined_m,
+            8 => ShapeOfEarth::SphericalRadiusHorizontaWgs84_6_371_200_m,
+            9..=191 => ShapeOfEarth::Reserved,
+            192..=254 => ShapeOfEarth::LocalUse,
+            _ => ShapeOfEarth::Missing,
+        }
+    }
+}
+
+
 impl SectionBody {
     fn get_tmpl_num(&self) -> Option<u16> {
         match self {
@@ -115,6 +152,8 @@ pub struct GridDefinition {
     pub num_points: u32,
     /// Grid Definition Template Number
     pub grid_tmpl_num: u16,
+    /// Source of grid definition
+    pub source: ShapeOfEarth,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -726,6 +765,7 @@ mod tests {
                 body: Some(SectionBody::Section3(GridDefinition {
                     num_points: 0,
                     grid_tmpl_num: 0,
+                    source: ShapeOfEarth::SphericalRadius_6_367_470_m,
                 })),
             },
             SectionInfo {
@@ -755,6 +795,7 @@ mod tests {
                 body: Some(SectionBody::Section3(GridDefinition {
                     num_points: 0,
                     grid_tmpl_num: 1,
+                    source: ShapeOfEarth::SphericalRadius_6_367_470_m,
                 })),
             },
             SectionInfo {

@@ -214,6 +214,7 @@ pub fn unpack_sect3_body<R: Read>(f: &mut R, body_size: usize) -> Result<Section
     Ok(SectionBody::Section3(GridDefinition {
         num_points: read_as!(u32, buf, 1),
         grid_tmpl_num: read_as!(u16, buf, 7),
+        source: read_as!(u8, buf, 6).into(),
     }))
 }
 
@@ -302,6 +303,7 @@ impl From<io::Error> for ParseError {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::context::ShapeOfEarth;
 
     use std::fs::File;
     use std::io::{BufReader, Cursor};
@@ -350,6 +352,7 @@ mod tests {
                     body: Some(SectionBody::Section3(GridDefinition {
                         num_points: 86016,
                         grid_tmpl_num: 0,
+                        source: ShapeOfEarth::SphericalRadius_6_367_470_m,
                     })),
                 },
                 SectionInfo {
